@@ -1,0 +1,85 @@
+{
+  "name": "@zama-fhe/wdk-protocol-swidge-zama",
+  "version": "0.1.0-alpha.0",
+  "description": "WDK swidge module to shield USDT into confidential cUSDT (and back) on Ethereum through the Zama protocol, as a same-chain swap.",
+  "keywords": [
+    "wdk",
+    "protocol",
+    "swidge",
+    "swap",
+    "evm",
+    "ethereum",
+    "zama",
+    "fhe",
+    "confidential",
+    "erc-7984",
+    "cusdt"
+  ],
+  "author": "Zama <hello@zama.ai>",
+  "license": "Apache-2.0",
+  "homepage": "https://docs.zama.org/protocol",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zama-ai/wdk-zama.git",
+    "directory": "packages/protocol-swidge-zama"
+  },
+  "main": "index.js",
+  "type": "module",
+  "types": "./types",
+  "files": [
+    "index.js",
+    "bare.js",
+    "src",
+    "types",
+    "examples"
+  ],
+  "scripts": {
+    "build:types": "tsc",
+    "lint": "standard",
+    "lint:fix": "standard --fix",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --testPathIgnorePatterns=/tests/integration/",
+    "test:coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage --testPathIgnorePatterns=/tests/integration/",
+    "test:integration": "cross-env NODE_OPTIONS=--experimental-vm-modules jest tests/integration --runInBand --forceExit"
+  },
+  "dependencies": {
+    "@tetherto/wdk-wallet": "1.0.0-beta.21",
+    "@zama-fhe/sdk": "3.7.0",
+    "@zama-fhe/wdk-wallet-evm-zama": "0.1.0-alpha.0",
+    "bare-node-runtime": "1.5.0",
+    "viem": "2.57.7"
+  },
+  "devDependencies": {
+    "@tetherto/wdk": "^1.0.0-beta.20",
+    "@tetherto/wdk-wallet-evm": "1.0.0-beta.22",
+    "cross-env": "7.0.3",
+    "jest": "29.7.0",
+    "standard": "17.1.2",
+    "typescript": "5.8.3"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "bare": "./bare.js",
+      "default": "./index.js"
+    },
+    "./package": {
+      "default": "./package.json"
+    }
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ],
+    "ignore": [
+      "bare.js",
+      "tests/**/*.js"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
+  }
+}

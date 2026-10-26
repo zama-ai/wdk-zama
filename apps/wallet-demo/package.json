@@ -1,0 +1,39 @@
+{
+  "name": "wdk-zama-wallet-demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Browser demo of a Tether WDK wallet holding confidential USD₮ through the Zama modules (Sepolia).",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "standard \"**/*.{js,jsx}\"",
+    "lint:fix": "standard --fix \"**/*.{js,jsx}\""
+  },
+  "dependencies": {
+    "@tetherto/wdk": "1.0.0-beta.20",
+    "@zama-fhe/sdk": "3.7.0",
+    "@zama-fhe/wdk-protocol-swidge-zama": "0.1.0-alpha.0",
+    "@zama-fhe/wdk-wallet-evm-zama": "0.1.0-alpha.0",
+    "ethers": "6.17.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "sodium-javascript": "0.8.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "4.7.0",
+    "standard": "17.1.2",
+    "vite": "6.4.5",
+    "vite-plugin-node-polyfills": "0.28.0"
+  },
+  "standard": {
+    "env": [
+      "browser"
+    ],
+    "ignore": [
+      "dist/"
+    ]
+  }
+}

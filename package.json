@@ -1,0 +1,29 @@
+{
+  "name": "wdk-zama",
+  "private": true,
+  "description": "Zama confidential token modules for the Tether Wallet Development Kit (WDK).",
+  "license": "Apache-2.0",
+  "type": "module",
+  "workspaces": [
+    "packages/wallet-evm-zama",
+    "packages/protocol-swidge-zama",
+    "apps/wallet-demo"
+  ],
+  "scripts": {
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:fix": "npm run lint:fix --workspaces --if-present",
+    "test": "npm test --workspaces --if-present",
+    "test:integration": "node --env-file-if-exists=.env --experimental-vm-modules node_modules/jest/bin/jest.js --projects packages/wallet-evm-zama packages/protocol-swidge-zama --testPathPattern tests/integration --runInBand --forceExit",
+    "build:types": "npm run build:types --workspaces --if-present",
+    "example:wallet": "node --env-file-if-exists=.env packages/wallet-evm-zama/examples/shield-transfer-unshield.js",
+    "example:swidge": "node --env-file-if-exists=.env packages/protocol-swidge-zama/examples/shield-via-swidge.js",
+    "demo": "npm run dev -w apps/wallet-demo"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22.13.0",
+      "onFail": "error"
+    }
+  }
+}
