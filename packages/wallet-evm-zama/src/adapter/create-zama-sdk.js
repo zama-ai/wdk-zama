@@ -19,7 +19,7 @@ import { EthersProvider } from '@zama-fhe/sdk/ethers'
 
 import { ZamaWdkError, assertSupportedAccount } from '../errors.js'
 import { getDefaultPairs, normalizePairs } from '../tokens.js'
-import { buildEthersProvider, resolveChain, toRelayerNetwork } from './chain.js'
+import { buildEthersProvider, getRpcChainId, resolveChain, toRelayerNetwork } from './chain.js'
 import WdkZamaSigner from './wdk-signer.js'
 
 /** @typedef {import('@zama-fhe/sdk/chains').FheChain} FheChain */
@@ -176,10 +176,10 @@ export async function createZamaSdk (account, config = {}) {
   }
 
   const provider = buildEthersProvider(rpc, explicitChain?.id)
-  const { chainId } = await provider.getNetwork()
-  const chain = explicitChain ?? resolveChain(undefined, Number(chainId))
+  const chainId = await getRpcChainId(provider)
+  const chain = explicitChain ?? resolveChain(undefined, chainId)
 
-  if (Number(chainId) !== chain.id) {
+  if (chainId !== chain.id) {
     throw new ZamaWdkError(`The RPC is connected to chain ${chainId} but the module is configured for chain ${chain.id}.`)
   }
 

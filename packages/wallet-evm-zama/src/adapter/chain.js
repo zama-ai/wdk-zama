@@ -100,7 +100,7 @@ export function pickRpc (rpc) {
  * reused as-is, and a list becomes a failover provider.
  *
  * @param {RpcConfig} rpc - The WDK provider configuration.
- * @param {number} [chainId] - The expected chain id, to skip network detection.
+ * @param {number} [chainId] - The expected chain id. The provider is pinned to it and never asks the RPC.
  * @returns {Provider} The ethers provider.
  * @throws {ZamaWdkError} If no RPC is configured.
  */
@@ -112,6 +112,25 @@ export function buildEthersProvider (rpc, chainId) {
   }
 
   return provider
+}
+
+/**
+ * Asks the RPC for its chain id. `getNetwork()` cannot: on a pinned provider it returns the pinned id.
+ *
+ * @param {Provider} provider - The ethers provider.
+ * @returns {Promise<number>} The RPC's chain id.
+ */
+export async function getRpcChainId (provider) {
+  const { send } = /** @type {any} */ (provider)
+
+  if (typeof send === 'function') {
+    return Number(await send.call(provider, 'eth_chainId', []))
+  }
+
+  // Only providers WDK builds are pinned; a caller-built one keeps its own network configuration.
+  const { chainId } = await provider.getNetwork()
+
+  return Number(chainId)
 }
 
 /**
