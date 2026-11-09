@@ -14,10 +14,10 @@ From the repo root:
 
 ```bash
 npm install
-npm run demo        # http://localhost:5173
+npm run demo        # http://localhost:3000
 ```
 
-Optional: set `VITE_SEPOLIA_RPC_URL` to use your own Sepolia RPC. The default is a public endpoint.
+Optional: set `NEXT_PUBLIC_SEPOLIA_RPC_URL` to use your own Sepolia RPC. The default is a public endpoint.
 
 Then:
 
@@ -30,12 +30,12 @@ Then:
 
 ## Browser setup notes
 
-Things the [Vite config](vite.config.js) does that any browser integration needs:
+The demo is a [Next.js](https://nextjs.org/) app. Things it does that any browser integration needs:
 
-- **Cross-origin isolation.** The Zama web relayer runs TFHE in a worker with `SharedArrayBuffer`, so the page must be served with `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp`.
-- **`@zama-fhe/sdk` is excluded from dependency pre-bundling**, so its `new URL('./encrypt.worker.js', import.meta.url)` worker resolves.
-- **`@zama-fhe/sdk/node` is aliased to a stub.** The wallet module imports the Node relayer lazily; the browser always uses `relayer: 'web'`.
-- **`sodium-javascript` is installed and `Buffer`/`process` are polyfilled.** WDK's EVM signer uses `sodium-universal`, which needs `sodium-javascript` in browsers.
+- **Cross-origin isolation.** The Zama web relayer runs TFHE in a worker with `SharedArrayBuffer`, so the page must be served with `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp`. See the `headers` in [`next.config.mjs`](next.config.mjs).
+- **`@zama-fhe/sdk/node` is aliased to a stub** in browser builds ([`next.config.mjs`](next.config.mjs)). The wallet module imports the Node relayer lazily; the browser always uses `relayer: 'web'`.
+- **The wallet renders only in the browser.** [`src/app/page.jsx`](src/app/page.jsx) loads the app with `ssr: false`, because it uses `localStorage`, IndexedDB and the TFHE worker.
+- **`sodium-javascript` is installed and `Buffer`/`process` are polyfilled** ([`src/polyfills.js`](src/polyfills.js)). WDK's EVM signer uses `sodium-universal`, which needs `sodium-javascript` in browsers.
 
 ## Demo shortcuts
 

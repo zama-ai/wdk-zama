@@ -7,7 +7,14 @@ updates:
       interval: weekly
     cooldown:
       default-days: 3
+    # TypeScript 7 drops JSDoc @private/@protected from emitted .d.ts, exposing internals as public API.
+    ignore:
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
     groups:
+      # react-dom pins react exactly; bumping one alone breaks the demo at runtime.
+      react:
+        patterns: [react, react-dom]
       minor-and-patch:
         update-types:
           - minor

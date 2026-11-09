@@ -6,9 +6,9 @@
   "license": "BSD-3-Clause-Clear",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "standard \"**/*.{js,jsx}\"",
     "lint:fix": "standard --fix \"**/*.{js,jsx}\""
   },
@@ -19,22 +19,21 @@
     "@zama-fhe/wdk-wallet-evm-zama": "0.1.0-alpha.0",
     "buffer": "6.0.3",
     "ethers": "6.17.0",
+    "next": "16.4.5",
     "process": "0.11.10",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "sodium-javascript": "0.8.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "4.7.0",
-    "standard": "17.1.2",
-    "vite": "6.4.5"
+    "standard": "17.1.2"
   },
   "standard": {
     "env": [
       "browser"
     ],
     "ignore": [
-      "dist/"
+      ".next/"
     ]
   }
 }

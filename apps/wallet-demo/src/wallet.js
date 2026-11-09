@@ -11,7 +11,7 @@ export const USDT = USDT_MOCK_SEPOLIA
 export const CUSDT = CUSDT_MOCK_SEPOLIA
 export const DECIMALS = 6
 export const EXPLORER = 'https://eth-sepolia.blockscout.com'
-export const RPC_URL = import.meta.env.VITE_SEPOLIA_RPC_URL || 'https://ethereum-sepolia-rpc.publicnode.com'
+export const RPC_URL = process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL || 'https://ethereum-sepolia-rpc.publicnode.com'
 
 const SEED_KEY = 'wdk-zama-demo:seed'
 const MINT = new Interface(['function mint(address to, uint256 amount)'])
