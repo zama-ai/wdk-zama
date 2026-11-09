@@ -40,10 +40,10 @@
     "test:integration": "cross-env NODE_OPTIONS=--experimental-vm-modules jest tests/integration --runInBand --forceExit"
   },
   "dependencies": {
-    "@tetherto/wdk-wallet": "1.0.0-beta.21",
-    "@tetherto/wdk-wallet-evm": "1.0.0-beta.22",
+    "@tetherto/wdk-wallet": "1.0.0-beta.25",
+    "@tetherto/wdk-wallet-evm": "1.0.0-beta.25",
     "@zama-fhe/sdk": "3.7.0",
-    "bare-node-runtime": "1.5.0",
+    "bare-node-runtime": "1.5.4",
     "ethers": "6.17.0",
     "viem": "2.57.7"
   },
