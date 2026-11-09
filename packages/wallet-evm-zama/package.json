@@ -42,10 +42,10 @@
   "dependencies": {
     "@tetherto/wdk-wallet": "1.0.0-beta.25",
     "@tetherto/wdk-wallet-evm": "1.0.0-beta.25",
-    "@zama-fhe/sdk": "3.7.0",
+    "@zama-fhe/sdk": "3.7.1",
     "bare-node-runtime": "1.5.4",
     "ethers": "6.17.0",
-    "viem": "2.57.7"
+    "viem": "2.57.16"
   },
   "devDependencies": {
     "cross-env": "7.0.3",

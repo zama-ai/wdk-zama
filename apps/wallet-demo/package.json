@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@tetherto/wdk": "1.0.0-beta.22",
-    "@zama-fhe/sdk": "3.7.0",
+    "@zama-fhe/sdk": "3.7.1",
     "@zama-fhe/wdk-protocol-swidge-zama": "0.1.0-alpha.0",
     "@zama-fhe/wdk-wallet-evm-zama": "0.1.0-alpha.0",
     "buffer": "6.0.3",
