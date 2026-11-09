@@ -43,3 +43,8 @@ jobs:
         run: |
           npm run build:types
           git diff --exit-code -- packages/*/types
+
+      - name: Build demo
+        run: npm run build -w apps/wallet-demo
+        env:
+          NEXT_TELEMETRY_DISABLED: 1

@@ -1,3 +1,5 @@
+import './polyfills.js'
+
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import {
