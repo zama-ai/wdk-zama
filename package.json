@@ -2,7 +2,7 @@
   "name": "wdk-zama",
   "private": true,
   "description": "Zama confidential token modules for the Tether Wallet Development Kit (WDK).",
-  "license": "Apache-2.0",
+  "license": "BSD-3-Clause-Clear",
   "type": "module",
   "workspaces": [
     "packages/wallet-evm-zama",

@@ -107,4 +107,4 @@ To try the modules in a browser wallet, run `npm run demo` and see [`apps/wallet
 
 ## License
 
-Apache-2.0
+BSD-3-Clause-Clear. See [LICENSE](LICENSE).

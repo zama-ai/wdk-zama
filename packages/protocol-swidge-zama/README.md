@@ -79,4 +79,4 @@ Anything else, or a `toChain` different from the configured chain, throws `Unsup
 
 ## License
 
-Apache-2.0
+BSD-3-Clause-Clear. See [LICENSE](LICENSE).
