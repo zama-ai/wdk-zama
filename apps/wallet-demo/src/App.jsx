@@ -3,7 +3,7 @@ import './polyfills.js'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import {
-  CUSDT, USDT, addressUrl, createWallet, forgetSeed, formatAmount, formatEth, formatFee, generateSeed,
+  CUSDT, ENV_SEED, USDT, addressUrl, createWallet, forgetSeed, formatAmount, formatEth, formatFee, generateSeed,
   isValidSeed, loadSeed, mintTestUsdt, parseAmount, saveSeed, shortAddress, txUrl
 } from './wallet.js'
 
@@ -33,7 +33,11 @@ export default function App () {
   }, [wallet])
 
   useEffect(() => {
-    const seed = loadSeed()
+    if (ENV_SEED && !isValidSeed(ENV_SEED)) {
+      console.error('NEXT_PUBLIC_DEMO_SEED_PHRASE in .env.local is not a valid recovery phrase. Ignoring it.')
+    }
+
+    const seed = ENV_SEED && isValidSeed(ENV_SEED) ? ENV_SEED : loadSeed()
 
     if (seed && isValidSeed(seed)) setWallet(createWallet(seed))
   }, [])

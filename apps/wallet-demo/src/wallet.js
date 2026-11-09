@@ -13,6 +13,12 @@ export const DECIMALS = 6
 export const EXPLORER = 'https://eth-sepolia.blockscout.com'
 export const RPC_URL = process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL || 'https://ethereum-sepolia-rpc.publicnode.com'
 
+// Dev only: a seed phrase from .env.local opens that wallet on load. Production builds drop this
+// branch, so the phrase is never compiled into a deployable bundle.
+export const ENV_SEED = process.env.NODE_ENV === 'development'
+  ? (process.env.NEXT_PUBLIC_DEMO_SEED_PHRASE || '').trim() || null
+  : null
+
 const SEED_KEY = 'wdk-zama-demo:seed'
 const MINT = new Interface(['function mint(address to, uint256 amount)'])
 
