@@ -12,6 +12,9 @@ const nextConfig = {
       '@zama-fhe/sdk/node': { browser: './src/node-relayer-stub.js' }
     }
   },
+  // No image optimization, so Next.js never loads sharp. The root package.json overrides sharp
+  // with an empty stub to keep its LGPL libvips binaries out of the install.
+  images: { unoptimized: true },
   headers: async () => [{ source: '/:path*', headers: isolation }]
 }
 

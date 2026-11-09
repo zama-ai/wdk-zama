@@ -11,6 +11,17 @@ Two community modules for the [Tether Wallet Development Kit](https://docs.wdk.t
 
 **Privacy statement.** Shield and unshield amounts are public: they are ERC-20 transfers into and out of the wrapper. Confidential balances and confidential-transfer amounts are encrypted. Sender and recipient addresses are always public.
 
+## Table of contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Status](#status)
+- [Layout](#layout)
+- [Development](#development)
+- [Contributing](#contributing)
+- [Support](#support)
+- [License](#license)
+
 ## Installation
 
 ```bash
@@ -104,6 +115,18 @@ npm run test:integration   # the end-to-end flows, including an interrupted unsh
 ```
 
 To try the modules in a browser wallet, run `npm run demo` and see [`apps/wallet-demo`](apps/wallet-demo).
+
+## Contributing
+
+To report a bug or suggest an idea, [open an issue](https://github.com/zama-ai/wdk-zama/issues/new). To send pull requests, email <hello@zama.ai> to become an approved contributor; this involves signing our Contributor License Agreement (CLA). See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+To report a security vulnerability, follow [SECURITY.md](SECURITY.md).
+
+## Support
+
+- Questions and discussion: the [Zama community forum](https://community.zama.ai)
+- Zama protocol and SDK documentation: [docs.zama.org](https://docs.zama.org/protocol)
+- Tether WDK documentation: [docs.wdk.tether.io](https://docs.wdk.tether.io/)
 
 ## License
 
