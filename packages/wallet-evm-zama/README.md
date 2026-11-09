@@ -115,4 +115,4 @@ Inherited methods keep their public behavior: `transfer()` on cUSDT is **not** a
 
 ## License
 
-Apache-2.0
+BSD-3-Clause-Clear. See [LICENSE](LICENSE).

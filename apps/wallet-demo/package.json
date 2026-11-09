@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Browser demo of a Tether WDK wallet holding confidential USD₮ through the Zama modules (Sepolia).",
-  "license": "Apache-2.0",
+  "license": "BSD-3-Clause-Clear",
   "type": "module",
   "scripts": {
     "dev": "vite",

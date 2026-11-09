@@ -14,7 +14,7 @@
     "cusdt"
   ],
   "author": "Zama <hello@zama.ai>",
-  "license": "Apache-2.0",
+  "license": "BSD-3-Clause-Clear",
   "homepage": "https://docs.zama.org/protocol",
   "repository": {
     "type": "git",
