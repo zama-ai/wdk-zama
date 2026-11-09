@@ -1,0 +1,8 @@
+{
+  "name": "sharp",
+  "version": "0.0.0-stub",
+  "private": true,
+  "description": "Empty stand-in for sharp. The demo does not use Next.js image optimization, so it does not install sharp and its LGPL libvips binaries.",
+  "license": "BSD-3-Clause-Clear",
+  "main": "index.js"
+}

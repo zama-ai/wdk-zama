@@ -27,6 +27,7 @@
     }
   },
   "overrides": {
-    "@tetherto/wdk-wallet": "1.0.0-beta.25"
+    "@tetherto/wdk-wallet": "1.0.0-beta.25",
+    "sharp": "file:apps/wallet-demo/stubs/sharp"
   }
 }
