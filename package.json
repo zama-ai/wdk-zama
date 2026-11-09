@@ -25,5 +25,8 @@
       "version": ">=22.13.0",
       "onFail": "error"
     }
+  },
+  "overrides": {
+    "@tetherto/wdk-wallet": "1.0.0-beta.25"
   }
 }

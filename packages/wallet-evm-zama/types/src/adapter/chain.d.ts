@@ -22,11 +22,18 @@ export function pickRpc(rpc: RpcConfig): string | Provider | Eip1193Provider | u
  * reused as-is, and a list becomes a failover provider.
  *
  * @param {RpcConfig} rpc - The WDK provider configuration.
- * @param {number} [chainId] - The expected chain id, to skip network detection.
+ * @param {number} [chainId] - The expected chain id. The provider is pinned to it and never asks the RPC.
  * @returns {Provider} The ethers provider.
  * @throws {ZamaWdkError} If no RPC is configured.
  */
 export function buildEthersProvider(rpc: RpcConfig, chainId?: number): Provider;
+/**
+ * Asks the RPC for its chain id. `getNetwork()` cannot: on a pinned provider it returns the pinned id.
+ *
+ * @param {Provider} provider - The ethers provider.
+ * @returns {Promise<number>} The RPC's chain id.
+ */
+export function getRpcChainId(provider: Provider): Promise<number>;
 /**
  * Converts a WDK provider configuration into the `network` value the Zama relayer client accepts:
  * an RPC url or an EIP-1193 provider. An ethers provider is wrapped in a minimal EIP-1193 shim

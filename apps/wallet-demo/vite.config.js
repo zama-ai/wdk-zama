@@ -2,7 +2,6 @@ import { fileURLToPath } from 'node:url'
 
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 // The web relayer runs TFHE in a worker with SharedArrayBuffer, which needs cross-origin isolation.
 const isolation = {
@@ -11,16 +10,15 @@ const isolation = {
 }
 
 export default defineConfig({
-  plugins: [
-    react(),
-    // WDK's seed and key handling (bip39, sodium-universal) expects Buffer and process.
-    nodePolyfills({ include: ['buffer', 'process'], globals: { Buffer: true, process: true } })
-  ],
+  plugins: [react()],
   resolve: {
-    alias: {
+    alias: [
+      // Map Node's buffer and process to their npm browser builds; the trailing slash skips the built-in.
+      { find: /^(node:)?buffer$/, replacement: 'buffer/' },
+      { find: /^(node:)?process$/, replacement: 'process/browser.js' },
       // The wallet module picks the relayer at runtime; the Node transport is never used here.
-      '@zama-fhe/sdk/node': fileURLToPath(new URL('./src/node-relayer-stub.js', import.meta.url))
-    }
+      { find: '@zama-fhe/sdk/node', replacement: fileURLToPath(new URL('./src/node-relayer-stub.js', import.meta.url)) }
+    ]
   },
   // Pre-bundling would break the SDK's `new URL('./encrypt.worker.js', import.meta.url)`.
   optimizeDeps: { exclude: ['@zama-fhe/sdk'] },
