@@ -17,7 +17,12 @@ npm install
 npm run demo        # http://localhost:3000
 ```
 
-Optional: set `NEXT_PUBLIC_SEPOLIA_RPC_URL` to use your own Sepolia RPC. The default is a public endpoint.
+Optional settings go in `apps/wallet-demo/.env.local`. Copy [`.env.example`](.env.example) to start:
+
+- `NEXT_PUBLIC_SEPOLIA_RPC_URL`: your own Sepolia RPC. The default is a public endpoint.
+- `NEXT_PUBLIC_DEMO_SEED_PHRASE`: a recovery phrase that the demo opens on load, so you skip onboarding. Use a testnet-only wallet. Only `npm run demo` reads it; production builds ignore it, so the phrase never ends up in a deployable bundle.
+
+Restart `npm run demo` after you change `.env.local`.
 
 Then:
 
