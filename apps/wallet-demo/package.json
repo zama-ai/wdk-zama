@@ -25,7 +25,7 @@
     "sodium-javascript": "0.8.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "4.7.0",
+    "@vitejs/plugin-react": "6.2.1",
     "standard": "17.1.2",
     "vite": "6.4.5"
   },
