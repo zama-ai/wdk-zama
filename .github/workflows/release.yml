@@ -1,0 +1,191 @@
+name: Release
+
+# Publishes both packages to npm when a GitHub Release is published.
+# The tag (vX.Y.Z or vX.Y.Z-<channel>.N) must match the version in both package.json files.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing release tag to publish (e.g. v0.1.0-alpha.1)"
+        required: true
+        type: string
+      dry-run:
+        description: "Run npm publish --dry-run instead of publishing"
+        required: false
+        type: boolean
+        default: true
+
+permissions: {}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash -euo pipefail {0}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+      dist-tag: ${{ steps.resolve.outputs.dist-tag }}
+      revision: ${{ steps.resolve.outputs.revision }}
+    env:
+      TAG: ${{ github.event.release.tag_name || inputs.tag }}
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Fully-qualified so a branch with the same name cannot be picked up.
+          ref: refs/tags/${{ github.event.release.tag_name || inputs.tag }}
+          # Full history, for the reachability check below.
+          fetch-depth: 0
+          persist-credentials: false
+
+      # A release can be cut from any ref; only publish code that landed on main through a reviewed PR.
+      - name: Verify tag is reachable from main
+        run: |
+          git merge-base --is-ancestor HEAD origin/main && rc=0 || rc=$?
+          if [[ "${rc}" -eq 1 ]]; then
+            echo "::error::Tag ${TAG} ($(git rev-parse HEAD)) is not reachable from main. Refusing to publish."
+            exit 1
+          elif [[ "${rc}" -ne 0 ]]; then
+            echo "::error::git merge-base failed unexpectedly (exit ${rc})."
+            exit "${rc}"
+          fi
+
+      - name: Resolve version and dist-tag
+        id: resolve
+        env:
+          IS_PRERELEASE: ${{ github.event.release.prerelease }}
+        run: |
+          if [[ ! "${TAG}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-z]+\.[0-9]+)?$ ]]; then
+            echo "::error::Tag ${TAG} is not vX.Y.Z or vX.Y.Z-<channel>.N."
+            exit 1
+          fi
+          version="${TAG#v}"
+
+          wallet_version="$(node -p 'require("./packages/wallet-evm-zama/package.json").version')"
+          swidge_version="$(node -p 'require("./packages/protocol-swidge-zama/package.json").version')"
+          swidge_dep="$(node -p 'require("./packages/protocol-swidge-zama/package.json").dependencies["@zama-fhe/wdk-wallet-evm-zama"]')"
+          for pair in "wallet-evm-zama:${wallet_version}" "protocol-swidge-zama:${swidge_version}" "protocol-swidge-zama dependency on wallet-evm-zama:${swidge_dep}"; do
+            if [[ "${pair##*:}" != "${version}" ]]; then
+              echo "::error::${pair%:*} is ${pair##*:}, expected ${version} from tag ${TAG}."
+              exit 1
+            fi
+          done
+
+          dist_tag="latest"
+          if [[ "${version}" == *-* ]]; then
+            dist_tag="${version#*-}"     # alpha.1
+            dist_tag="${dist_tag%%.*}"   # alpha
+          fi
+
+          # Keep the GitHub "pre-release" flag and the npm dist-tag in agreement.
+          if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
+            if [[ "${dist_tag}" == "latest" && "${IS_PRERELEASE}" == "true" ]]; then
+              echo "::error::Release ${TAG} is marked pre-release but has a stable version."
+              exit 1
+            elif [[ "${dist_tag}" != "latest" && "${IS_PRERELEASE}" != "true" ]]; then
+              echo "::error::Release ${TAG} has a pre-release version but is not marked pre-release."
+              exit 1
+            fi
+          fi
+
+          {
+            echo "version=${version}"
+            echo "dist-tag=${dist_tag}"
+            echo "revision=$(git rev-parse HEAD)"
+          } >> "$GITHUB_OUTPUT"
+          echo "Tag ${TAG} -> version ${version}, dist-tag ${dist_tag}"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22.x
+          # No dependency cache in a release workflow: a poisoned cache could reach the published packages.
+          package-manager-cache: false
+
+      # .npmrc sets ignore-scripts=true, so dependency install scripts do not run.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Check generated types are up to date
+        run: |
+          npm run build:types
+          git diff --exit-code -- packages/*/types
+
+  publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Protected environment: required reviewers approve each publish.
+    environment: npm-publish
+    permissions:
+      contents: read
+      id-token: write # npm trusted publishing (OIDC) and provenance
+    env:
+      VERSION: ${{ needs.verify.outputs.version }}
+      DIST_TAG: ${{ needs.verify.outputs.dist-tag }}
+      DRY_RUN: ${{ inputs.dry-run || false }}
+    steps:
+      # The verified commit, not the tag, which can still move.
+      - name: Checkout release commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.verify.outputs.revision }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22.x
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      # Trusted publishing needs npm >= 11.5; Node 22 bundles npm 10.
+      - name: Install npm 11
+        run: |
+          npm install -g npm@11.7.0
+          npm --version
+
+      # Order matters: protocol-swidge-zama pins wallet-evm-zama at the same version.
+      # Already-published versions are skipped, so a re-run after a partial failure is safe.
+      # Auth: OIDC trusted publishing. NPM_TOKEN is only a fallback for the first publish,
+      # before a trusted publisher can be attached to the packages; delete it afterwards.
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: "true"
+        run: |
+          flags=(--access public --tag "${DIST_TAG}")
+          if [[ "${DRY_RUN}" == "true" ]]; then
+            flags+=(--dry-run)
+            echo "::notice::Dry run: nothing will be published."
+          fi
+
+          for dir in packages/wallet-evm-zama packages/protocol-swidge-zama; do
+            name="$(node -p "require('./${dir}/package.json').name")"
+            if [[ "$(npm view "${name}@${VERSION}" version 2>/dev/null || true)" == "${VERSION}" ]]; then
+              echo "::notice::${name}@${VERSION} is already on npm; skipping."
+              echo "- \`${name}@${VERSION}\` was already published" >> "$GITHUB_STEP_SUMMARY"
+              continue
+            fi
+            npm publish -w "${dir}" "${flags[@]}"
+            suffix=""
+            [[ "${DRY_RUN}" == "true" ]] && suffix=" (dry run)"
+            echo "- \`${name}@${VERSION}\` published with dist-tag \`${DIST_TAG}\`${suffix}" >> "$GITHUB_STEP_SUMMARY"
+          done
