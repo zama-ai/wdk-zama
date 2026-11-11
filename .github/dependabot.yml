@@ -20,6 +20,15 @@ updates:
           - minor
           - patch
 
+  # The sharp stub is not a workspace. The root "overrides" points sharp to it with a file: reference,
+  # so the "/" entry does not cover it.
+  - package-ecosystem: npm
+    directory: /apps/wallet-demo/stubs/sharp
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 3
+
   - package-ecosystem: github-actions
     directory: /
     schedule:

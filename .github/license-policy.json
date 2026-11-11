@@ -1,0 +1,18 @@
+{
+  "allow": [
+    "MIT",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "BSD-3-Clause-Clear",
+    "ISC",
+    "Apache-2.0",
+    "0BSD",
+    "Zlib",
+    "Unlicense",
+    "CC0-1.0",
+    "BlueOak-1.0.0"
+  ],
+  "exceptions": {
+    "caniuse-lite": "CC-BY-4.0 browser data. npm marks it as a production dependency because the demo app's `next` needs it. The published packages reach it only through dev tools (jest, babel)."
+  }
+}

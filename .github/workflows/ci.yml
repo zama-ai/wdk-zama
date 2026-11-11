@@ -15,6 +15,7 @@ permissions:
 
 jobs:
   check:
+    name: check
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -29,9 +30,26 @@ jobs:
           node-version: 22.x
           cache: npm
 
+      # Aikido safe-chain blocks known-malicious packages during npm ci.
+      # The installer of a release pins the safe-chain version and the SHA-256 of its binaries,
+      # so the hash of the installer pins everything it installs.
+      - name: Install Aikido safe-chain
+        env:
+          SAFE_CHAIN_RELEASE: 1.5.26
+          SAFE_CHAIN_INSTALLER_SHA256: 9e4af7107f06d9c0d758cb08fb36804c2af88e24972f3a9d3f8c2bd0ca002adf
+        run: |
+          installer="${RUNNER_TEMP}/install-safe-chain.sh"
+          curl -fsSL -o "${installer}" "https://github.com/AikidoSec/safe-chain/releases/download/${SAFE_CHAIN_RELEASE}/install-safe-chain.sh"
+          echo "${SAFE_CHAIN_INSTALLER_SHA256}  ${installer}" | sha256sum -c -
+          sh "${installer}" --ci
+
       # .npmrc sets ignore-scripts=true, so dependency install scripts do not run.
+      # The installer only warns if its setup fails, so make sure npm goes through the safe-chain shim.
       - name: Install dependencies
-        run: npm ci
+        shell: bash
+        run: |
+          [[ "$(command -v npm)" == */.safe-chain/* ]] || { echo "::error::npm is not wrapped by safe-chain: $(command -v npm)"; exit 1; }
+          npm ci
 
       - name: Lint
         run: npm run lint
@@ -44,7 +62,53 @@ jobs:
           npm run build:types
           git diff --exit-code -- packages/*/types
 
+      - name: License check
+        run: npm run check:licenses
+
       - name: Build demo
         run: npm run build -w apps/wallet-demo
         env:
           NEXT_TELEMETRY_DISABLED: 1
+
+  lint-actions:
+    name: lint-actions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Lint GitHub Actions workflow files
+        uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7 # v2.2.0
+        with:
+          version: 1.7.12
+          cache: false
+
+      - name: Run zizmor security audit
+        uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd # v0.8.1
+        with:
+          version: 1.31.1
+          persona: pedantic
+          # Fail the job on findings instead of uploading SARIF, which needs security-events: write.
+          advanced-security: false
+          annotations: true
+
+  dependency-review:
+    name: dependency-review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Dependency review
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high
+          show-openssf-scorecard: true
+          warn-on-openssf-scorecard-level: 3

@@ -16,6 +16,10 @@ Please include:
 - The potential impact
 - A suggested fix, if you have one
 
+## Response Timeline
+
+We aim to acknowledge reports within **48 hours** and provide an initial assessment within **5 business days**.
+
 ## Scope
 
 In scope:
