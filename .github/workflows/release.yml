@@ -29,6 +29,7 @@ defaults:
 
 jobs:
   verify:
+    name: verify
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -109,13 +110,29 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 22.x
+          node-version: 24.22.1
           # No dependency cache in a release workflow: a poisoned cache could reach the published packages.
           package-manager-cache: false
 
+      # Aikido safe-chain blocks known-malicious packages during npm ci.
+      # The installer of a release pins the safe-chain version and the SHA-256 of its binaries,
+      # so the hash of the installer pins everything it installs.
+      - name: Install Aikido safe-chain
+        env:
+          SAFE_CHAIN_RELEASE: 1.5.26
+          SAFE_CHAIN_INSTALLER_SHA256: 9e4af7107f06d9c0d758cb08fb36804c2af88e24972f3a9d3f8c2bd0ca002adf
+        run: |
+          installer="${RUNNER_TEMP}/install-safe-chain.sh"
+          curl -fsSL -o "${installer}" "https://github.com/AikidoSec/safe-chain/releases/download/${SAFE_CHAIN_RELEASE}/install-safe-chain.sh"
+          echo "${SAFE_CHAIN_INSTALLER_SHA256}  ${installer}" | sha256sum -c -
+          sh "${installer}" --ci
+
       # .npmrc sets ignore-scripts=true, so dependency install scripts do not run.
+      # The installer only warns if its setup fails, so make sure npm goes through the safe-chain shim.
       - name: Install dependencies
-        run: npm ci
+        run: |
+          [[ "$(command -v npm)" == */.safe-chain/* ]] || { echo "::error::npm is not wrapped by safe-chain: $(command -v npm)"; exit 1; }
+          npm ci
 
       - name: Lint
         run: npm run lint
@@ -129,6 +146,7 @@ jobs:
           git diff --exit-code -- packages/*/types
 
   publish:
+    name: publish
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -152,20 +170,16 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 22.x
+          # Bundles npm 11.19.1. Trusted publishing needs npm >= 11.5.1.
+          node-version: 24.22.1
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
-
-      # Trusted publishing needs npm >= 11.5; Node 22 bundles npm 10.
-      - name: Install npm 11
-        run: |
-          npm install -g npm@11.7.0
-          npm --version
 
       # Order matters: protocol-swidge-zama pins wallet-evm-zama at the same version.
       # Already-published versions are skipped, so a re-run after a partial failure is safe.
       # Auth: OIDC trusted publishing. NPM_TOKEN is only a fallback for the first publish,
-      # before a trusted publisher can be attached to the packages; delete it afterwards.
+      # before a trusted publisher can be attached to the packages.
+      # TODO: remove NODE_AUTH_TOKEN after the first publish, when the NPM_TOKEN secret is deleted.
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
