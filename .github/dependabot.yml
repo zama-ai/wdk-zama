@@ -6,7 +6,7 @@ updates:
     schedule:
       interval: weekly
     cooldown:
-      default-days: 3
+      default-days: 7
     # TypeScript 7 drops JSDoc @private/@protected from emitted .d.ts, exposing internals as public API.
     ignore:
       - dependency-name: typescript
@@ -27,11 +27,11 @@ updates:
     schedule:
       interval: weekly
     cooldown:
-      default-days: 3
+      default-days: 7
 
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
     cooldown:
-      default-days: 3
+      default-days: 7
