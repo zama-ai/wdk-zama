@@ -6,7 +6,7 @@ updates:
     schedule:
       interval: weekly
     cooldown:
-      default-days: 3
+      default-days: 7
     # TypeScript 7 drops JSDoc @private/@protected from emitted .d.ts, exposing internals as public API.
     ignore:
       - dependency-name: typescript
@@ -20,9 +20,18 @@ updates:
           - minor
           - patch
 
+  # The sharp stub is not a workspace. The root "overrides" points sharp to it with a file: reference,
+  # so the "/" entry does not cover it.
+  - package-ecosystem: npm
+    directory: /apps/wallet-demo/stubs/sharp
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
     cooldown:
-      default-days: 3
+      default-days: 7

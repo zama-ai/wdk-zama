@@ -16,6 +16,10 @@ Please include:
 - The potential impact
 - A suggested fix, if you have one
 
+## Response Timeline
+
+We aim to acknowledge reports as soon as possible and provide a resolution timeline once triage is complete.
+
 ## Scope
 
 In scope:
