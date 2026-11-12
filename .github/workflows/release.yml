@@ -177,12 +177,9 @@ jobs:
 
       # Order matters: protocol-swidge-zama pins wallet-evm-zama at the same version.
       # Already-published versions are skipped, so a re-run after a partial failure is safe.
-      # Auth: OIDC trusted publishing. NPM_TOKEN is only a fallback for the first publish,
-      # before a trusted publisher can be attached to the packages.
-      # TODO: remove NODE_AUTH_TOKEN after the first publish, when the NPM_TOKEN secret is deleted.
+      # Auth: OIDC trusted publishing only; no npm token is used.
       - name: Publish to npm
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "true"
         run: |
           flags=(--access public --tag "${DIST_TAG}")

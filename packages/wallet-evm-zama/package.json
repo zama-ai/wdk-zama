@@ -1,6 +1,6 @@
 {
   "name": "@zama-fhe/wdk-wallet-evm-zama",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.1",
   "description": "WDK community module adding Zama confidential tokens (cUSDT) to EVM wallet accounts: decrypted balances, confidential transfers, shield and unshield.",
   "keywords": [
     "wdk",
