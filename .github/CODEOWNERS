@@ -1,2 +1,7 @@
 # Every pull request needs an approval from a Zama code owner.
 * @zama-ai/product-integrations
+
+# CI/CD, the release workflow, Dependabot, and this file: changes need a review from the security team.
+# CODEOWNERS uses the last matching rule, so these lines must stay after the "*" line.
+/.github/ @zama-ai/security-team
+/.npmrc @zama-ai/security-team
