@@ -18,7 +18,7 @@ Please include:
 
 ## Response Timeline
 
-We aim to acknowledge reports within **48 hours** and provide an initial assessment within **5 business days**.
+We aim to acknowledge reports as soon as possible and provide a resolution timeline once triage is complete.
 
 ## Scope
 
