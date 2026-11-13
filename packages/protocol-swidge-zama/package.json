@@ -1,6 +1,6 @@
 {
   "name": "@zama-fhe/wdk-protocol-swidge-zama",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.1",
   "description": "WDK swidge module to shield USDT into confidential cUSDT (and back) on Ethereum through the Zama protocol, as a same-chain swap.",
   "keywords": [
     "wdk",
@@ -44,7 +44,7 @@
   "dependencies": {
     "@tetherto/wdk-wallet": "1.0.0-beta.25",
     "@zama-fhe/sdk": "3.7.1",
-    "@zama-fhe/wdk-wallet-evm-zama": "0.1.0-alpha.0",
+    "@zama-fhe/wdk-wallet-evm-zama": "0.1.0-alpha.1",
     "bare-node-runtime": "1.5.4",
     "viem": "2.57.16"
   },
