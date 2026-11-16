@@ -45,7 +45,7 @@
     "@zama-fhe/sdk": "3.7.1",
     "bare-node-runtime": "1.5.4",
     "ethers": "6.17.0",
-    "viem": "2.57.16"
+    "viem": "2.57.17"
   },
   "devDependencies": {
     "cross-env": "10.1.0",
