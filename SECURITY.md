@@ -30,7 +30,7 @@ Out of scope:
 
 - The demo app in `apps/wallet-demo`. It is a Sepolia testnet example, not production software.
 - Vulnerabilities in the Zama SDK (`@zama-fhe/sdk`). See the [Zama SDK security policy](https://github.com/zama-ai/sdk/security/policy).
-- Vulnerabilities in the Zama Protocol contracts. See the [fhEVM security policy](https://github.com/zama-ai/fhevm/security/policy).
+- Vulnerabilities in the Zama Protocol contracts. Report them to <security@zama.ai>.
 - Vulnerabilities in the Tether WDK (`@tetherto/*`) or other third-party dependencies. Please report those to the upstream projects.
 
 ## Bug Bounty
